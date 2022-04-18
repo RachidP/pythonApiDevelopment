@@ -1,6 +1,6 @@
 
 import time
-from fastapi import FastAPI, Response, status, HTTPException, Depends
+from fastapi import Depends, FastAPI, Response, status, HTTPException
 from fastapi.params import Body
 from pydantic import BaseModel
 import psycopg
@@ -38,26 +38,29 @@ def root():
     return {"message": "Hello World"}
 
 
-@app.get("/sqlalchemy")
-def test_posts(db: Session = Depends(get_db)):
-    post = db.query(models.Post).all()
-    return {"data": post}
-
-
 @app.get("/posts")
 def get_posts(db: Session = Depends(get_db)):
-    #cursor.execute("SELECT * FROM posts")
-    #posts = cursor.fetchall()
     posts = db.query(models.Post).all()
     return {"data": posts}
 
 
 @app.post("/posts", status_code=status.HTTP_201_CREATED)
-def create_posts(post: Post):
-    cursor.execute(
-        "INSERT INTO posts (title, content, published) VALUES (%s, %s, %b) RETURNING *",
-        (post.title, post.content, post.published))
-    new_posts = cursor.fetchone()
+def create_posts(post: Post, db: Session = Depends(get_db)):
+    # cursor.execute(
+    #    "INSERT INTO posts (title, content, published) VALUES (%s, %s, %b) RETURNING *",
+    #    (post.title, post.content, post.published))
+    #new_posts = cursor.fetchone()
+
+    # insert one by one
+    # new_posts = models.Post(title=post.title, content=post.content,
+    #                        published=post.published)
+
+    new_posts = models.Post(**post.dict())
+
+    db.add(new_posts)
+    db.commit()
+    db.refresh(new_posts)
+
     return {"data": new_posts}
 
 
