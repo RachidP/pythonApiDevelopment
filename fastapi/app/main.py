@@ -1,12 +1,16 @@
 
 import time
-from fastapi import FastAPI, Response, status, HTTPException
+from fastapi import FastAPI, Response, status, HTTPException, Depends
 from fastapi.params import Body
 from pydantic import BaseModel
 import psycopg
 from psycopg.rows import dict_row
+from . import models
+from .database import engine, get_db
+from sqlalchemy.orm import Session
 
 
+models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 
@@ -19,7 +23,7 @@ class Post(BaseModel):
 while True:
     try:
         conn = psycopg.connect(
-            host='localhost', dbname='fastapi', user='postgres', password='', row_factory=dict_row, autocommit=True)
+            host='localhost', dbname='fastapi', user='postgres', password='admin', row_factory=dict_row, autocommit=True)
         cursor = conn.cursor()
         print("Database connection was succesfull")
         break
@@ -34,10 +38,17 @@ def root():
     return {"message": "Hello World"}
 
 
+@app.get("/sqlalchemy")
+def test_posts(db: Session = Depends(get_db)):
+    post = db.query(models.Post).all()
+    return {"data": post}
+
+
 @app.get("/posts")
-def get_posts():
-    cursor.execute("SELECT * FROM posts")
-    posts = cursor.fetchall()
+def get_posts(db: Session = Depends(get_db)):
+    #cursor.execute("SELECT * FROM posts")
+    #posts = cursor.fetchall()
+    posts = db.query(models.Post).all()
     return {"data": posts}
 
 

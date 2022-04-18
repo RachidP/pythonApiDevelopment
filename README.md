@@ -2,11 +2,11 @@
 
 course python api development
 
-# course
+## course
 
 link of the course [Python API Development - Comprehensive Course for Beginners](https://www.youtube.com/watch?v=0sOvCWFmrtA)
 
-## setting virtual environment
+### setting virtual environment
 
 1. on cmd digit : `py -3 -m venv venv`
 
@@ -25,15 +25,17 @@ link of the course [Python API Development - Comprehensive Course for Beginners]
 
    3. check on terminal that now is visibile `venv`
 
-## fastapi
+4. check all package installed `pip freeze`
+
+### fastapi
 
 1. go to site [fastapi](https://fastapi.tiangolo.com/tutorial/) and follow the istruction to setting the project
 2. for running the project digit:
    `uvicorn app.main:app --reload`
 
-# POSTGRESS
+## POSTGRESS
 
-## SQL COMMANDS
+### SQL COMMANDS
 
 | ACTION | SQL COMMAND                                                |
 | ------ | ---------------------------------------------------------- |
@@ -41,7 +43,15 @@ link of the course [Python API Development - Comprehensive Course for Beginners]
 | DELETE | `DELETE FROM products WHERE id = 22;`                      |
 | UPDATE | `UPDATE products SET name = 'car' WHERE id = 11;`          |
 
-## POSTGRESS DRIVER
+### POSTGRESS DRIVER
 
 We use [Psycopg 3](https://www.psycopg.org/psycopg3/docs/) as a driver for postgress.
 To install the driver on bash digit `pip install psycopg[binary]`
+
+## ORMS
+
+Instead of manualy defining tables in postgres, we can define our tables as python models.
+
+### sqlalchemy
+
+We use [sqlalchemy](https://docs.sqlalchemy.org/en/14/) as python model, to install it digit: `pip install SQLAlchemy`
